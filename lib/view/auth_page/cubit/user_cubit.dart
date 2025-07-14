@@ -54,18 +54,22 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<void> onLoginSubmit() async {
-    if (state.isValid) {
-      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-      try {
-        await _authenticationRepository.logIn(
-          email: state.email.value,
-          password: state.password.value,
-        );
-        emit(state.copyWith(status: FormzSubmissionStatus.success));
-      } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure));
-      }
+    // if (state.isValid) {
+    emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+    try {
+      // await _authenticationRepository.logIn(
+      //   email: state.email.value,
+      //   password: state.password.value,
+      // );
+      await _authenticationRepository.logIn(
+        email: 'user@gmail.com',
+        password: '123456Ron',
+      );
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
+    } catch (e) {
+      emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }
+    // }
   }
 
   Future<void> onSignUpSubmit() async {

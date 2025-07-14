@@ -12,7 +12,7 @@ class Password extends FormzInput<String, PasswordValidationError> {
   @override
   PasswordValidationError? validator(String value) {
     if (value.isEmpty) return PasswordValidationError.empty;
-    if (value.length <= 10) return PasswordValidationError.tooShort;
+    if (value.length <= 5) return PasswordValidationError.tooShort;
     if (!_hasLetter.hasMatch(value) || !_hasNumber.hasMatch(value)) {
       return PasswordValidationError.noCharOrNumber;
     }

@@ -1,0 +1,150 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:cinema_flutter/shared/utils/dio_config.dart';
+import 'package:cinema_flutter/model/data_models/movie.dart';
+import 'package:cinema_flutter/model/data_models/genres.dart';
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+
+class MovieService {
+  static MovieService? _instance;
+  late final Dio dio;
+
+  MovieService._internal() {
+    dio = DioConfig().movieDio;
+  }
+
+  factory MovieService() {
+    _instance ??= MovieService._internal();
+    return _instance!;
+  }
+
+  // Get all movies
+  Future<List<Movie>> getMovies({
+    int? page,
+    int limit = 10,
+    int? rating,
+    String? search,
+    List<String>? genreQuery,
+  }) async {
+    try {
+      final response = await dio.get(
+        '/movies',
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          'rating': rating,
+          'search': search,
+          'genreQuery': genreQuery?.join(','),
+        },
+      );
+      final List<dynamic> moviesData = response.data['data'] as List<dynamic>;
+      return moviesData.map((json) => Movie.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch movies: $e');
+    }
+  }
+
+  // Get movie by ID
+  Future<Movie> getMovieById(String id) async {
+    try {
+      final response = await dio.get('/movies/$id');
+      final movieData = response.data['data'] as Map<String, dynamic>;
+      return Movie.fromJson(movieData);
+    } catch (e) {
+      throw Exception('Failed to fetch movie: $e');
+    }
+  }
+
+  // Create new movie
+  Future<Movie> createMovie(Map<String, dynamic> movieData) async {
+    try {
+      FormData formData = FormData.fromMap(movieData);
+      final response = await dio.post('/movies', data: formData);
+      final responseData = response.data['data'] as Map<String, dynamic>;
+      return Movie.fromJson(responseData);
+    } catch (e) {
+      throw Exception('Failed to create movie: $e');
+    }
+  }
+
+  // Update movie
+  Future<Movie> updateMovie(String id, Map<String, dynamic> movieData) async {
+    try {
+      final response = await dio.put('/movies/$id', data: movieData);
+      final responseData = response.data['data'] as Map<String, dynamic>;
+      return Movie.fromJson(responseData);
+    } catch (e) {
+      throw Exception('Failed to update movie: $e');
+    }
+  }
+
+  // Delete movie
+  Future<void> deleteMovie(String id) async {
+    try {
+      await dio.delete('/movies/$id');
+    } catch (e) {
+      throw Exception('Failed to delete movie: $e');
+    }
+  }
+
+  // Get all genres
+  Future<List<Genres>> getAllGenres({
+    int page = 1,
+    int limit = 20,
+    String? search,
+  }) async {
+    try {
+      final queryParameters = <String, dynamic>{
+        'page': page,
+        'limit': limit,
+        if (search != null && search.isNotEmpty) 'search': search,
+      };
+      final token =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhYWZhMzU2NS1jMTcxLTRlNTYtODVlZC1mODRmZjNjZDcxYzgiLCJyb2xlIjoiQURNSU4iLCJhdmF0YXJVcmwiOiIiLCJwdWJsaWNJZCI6IiIsImlhdCI6MTc1MjM4MjcyOCwiZXhwIjoxNzUyMzg2MzI4fQ.jOVzqGOuMQFYCEeB1SqElYndacNx69S11h_zVDG5C6Y";
+      final response = await dio.get(
+        '/genres',
+        queryParameters: queryParameters,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+      final List<dynamic> genresData = response.data['data'] as List<dynamic>;
+      return genresData.map((json) => Genres.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch genres: $e');
+    }
+  }
+
+  Future<void> testCreateMovie() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      XFile? thumbnailFile = await picker.pickImage(
+        source: ImageSource.gallery,
+      );
+      XFile? trailerFile = await picker.pickVideo(source: ImageSource.gallery);
+      if (thumbnailFile == null && trailerFile == null) {
+        throw Exception('No file selected');
+      }
+      await createMovie({
+        'title': 'abfsd',
+        'description': 'asaasdsdasd',
+        'duration': 123,
+        'releaseDate': '2025-07-13',
+        'genresIds': 'ac777b63-ae39-4ace-9bbf-0f78f2c2f0c9',
+        'thumbnail': await MultipartFile.fromFile(
+          thumbnailFile!.path,
+          filename: 'thumbnail.jpg',
+        ),
+        'trailer': await MultipartFile.fromFile(
+          trailerFile!.path,
+          filename: 'trailer.mp4',
+        ),
+      });
+      //     final response = await dio.post('/movies', data: formData);
+      // final responseData = response.data['data'] as Map<String, dynamic>;
+      // return Movie.fromJson(responseData);
+    } catch (e) {
+      throw Exception('Failed to create test movie: $e');
+    }
+  }
+}

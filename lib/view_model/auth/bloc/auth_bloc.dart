@@ -3,6 +3,7 @@ import 'package:cinema_flutter/model/repositories/auth_repository.dart';
 import 'package:cinema_flutter/model/services/user_service.dart';
 import 'package:cinema_flutter/view_model/auth/user.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -13,17 +14,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required AuthRepository authenticationRepository})
     : _authenticationRepository = authenticationRepository,
       super(AuthState.unknown()) {
-    on<AuthRequested>(_onAuthRequested);
+    on<AuthenticationSubscriptionRequested>(_onAuthRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
   }
 
   Future<void> _onAuthRequested(
-    AuthRequested event,
+    AuthenticationSubscriptionRequested event,
     Emitter<AuthState> emit,
   ) async {
     return emit.onEach(
       _authenticationRepository.status,
       onData: (status) async {
+        debugPrint('AuthBloc: $status');
         switch (status) {
           case AuthenticationStatus.authenticated:
             final user = await UserService().getProfile();

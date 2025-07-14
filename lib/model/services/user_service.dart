@@ -1,9 +1,13 @@
-import 'package:cinema_flutter/shared/utils/http.dart';
+import 'package:cinema_flutter/shared/utils/dio_config.dart';
 import 'package:cinema_flutter/view_model/auth/user.dart';
+import 'package:dio/dio.dart';
 
 class UserService {
   static UserService? _instance;
-  UserService._internal();
+  late final Dio dio;
+  UserService._internal() {
+    dio = DioConfig().authDio;
+  }
   factory UserService() {
     _instance ??= UserService._internal();
     return _instance!;

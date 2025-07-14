@@ -1,6 +1,9 @@
 import 'package:cinema_flutter/model/repositories/auth_repository.dart';
 import 'package:cinema_flutter/shared/extensions/custom_theme_extension.dart';
+import 'package:cinema_flutter/view/admin/main/admin_main.dart';
 import 'package:cinema_flutter/view/auth_page/cubit/user_cubit.dart';
+import 'package:cinema_flutter/view/main_page/main_page.dart';
+import 'package:cinema_flutter/view_model/auth/bloc/auth_bloc.dart';
 import 'package:cinema_flutter/view_model/auth/email.dart';
 import 'package:cinema_flutter/view_model/auth/full_name.dart';
 import 'package:cinema_flutter/view_model/auth/password.dart';
@@ -20,6 +23,11 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     return Scaffold(
@@ -34,42 +42,70 @@ class _AuthPageState extends State<AuthPage> {
         ),
         iconTheme: IconThemeData(color: theme.textColor),
       ),
-      body: BlocProvider(
-        create: (context) =>
-            UserCubit(authenticationRepository: AuthRepository.instance),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset('assets/images/background_auth.jpg', fit: BoxFit.cover),
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          debugPrint('AuthState: ${state.status}');
+          if (state.status == AuthenticationStatus.authenticated) {
+            if (state.user.role.toLowerCase() == 'admin') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminMain()),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MainPage()),
+              );
+            }
+          }
+          if (state.status == AuthenticationStatus.unauthenticated) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(content: Text('Authentication Failure')),
+              );
+          }
+        },
+        child: BlocProvider(
+          create: (context) =>
+              UserCubit(authenticationRepository: AuthRepository.instance),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                'assets/images/background_auth.jpg',
+                fit: BoxFit.cover,
+              ),
 
-            Container(color: Colors.black.withOpacity(0.65)),
+              Container(color: Colors.black.withOpacity(0.65)),
 
-            Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 24,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: theme.appBar.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 16,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
+              Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 24,
                   ),
-                  child: widget.isLogin
-                      ? const LoginForm()
-                      : const SignUpForm(),
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: theme.appBar.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 16,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: widget.isLogin
+                        ? const LoginForm()
+                        : const SignUpForm(),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -397,7 +433,7 @@ class _PasswordInput extends StatelessWidget {
           if (state.password.error == PasswordValidationError.empty) {
             errorMsg = 'Password cannot be empty';
           } else if (state.password.error == PasswordValidationError.tooShort) {
-            errorMsg = 'Password must be longer than 10 characters';
+            errorMsg = 'Password must be longer than 5 characters';
           } else if (state.password.error ==
               PasswordValidationError.noCharOrNumber) {
             errorMsg = 'Password must contain both letters and numbers';
@@ -512,6 +548,14 @@ class _SubmitButtonState extends State<_SubmitButton>
           scale: _scale,
           duration: const Duration(milliseconds: 80),
           child: GestureDetector(
+            // onTap: state.isValid
+            //     ? () => widget.isLogin
+            //           ? context.read<UserCubit>().onLoginSubmit()
+            //           : context.read<UserCubit>().onSignUpSubmit()
+            //     : null,
+            onTap: () => widget.isLogin
+                ? context.read<UserCubit>().onLoginSubmit()
+                : context.read<UserCubit>().onSignUpSubmit(),
             onTapDown: _onTapDown,
             onTapUp: _onTapUp,
             onTapCancel: _onTapCancel,

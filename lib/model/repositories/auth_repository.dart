@@ -13,6 +13,7 @@ class AuthRepository {
 
   static AuthRepository get instance {
     _instance ??= AuthRepository._();
+    _instance!._controller.add(AuthenticationStatus.unknown);
     return _instance!;
   }
 
@@ -39,6 +40,8 @@ class AuthRepository {
   Future<void> logIn({required String email, required String password}) async {
     try {
       await _authService.login(email: email, password: password);
+      _controller.add(AuthenticationStatus.authenticated);
+      debugPrint('Login success');
     } catch (e) {
       debugPrint('Login failed: $e');
       _controller.add(AuthenticationStatus.unauthenticated);
@@ -57,7 +60,7 @@ class AuthRepository {
 
   Stream<AuthenticationStatus> get status async* {
     await Future<void>.delayed(const Duration(seconds: 1));
-    yield AuthenticationStatus.unauthenticated;
+    yield AuthenticationStatus.unknown;
     yield* _controller.stream;
   }
 }

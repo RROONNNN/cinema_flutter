@@ -1,13 +1,16 @@
 import 'package:cinema_flutter/shared/services/token_storage.dart';
-import 'package:cinema_flutter/shared/utils/http.dart';
+import 'package:cinema_flutter/shared/utils/dio_config.dart';
+import 'package:dio/dio.dart';
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
 class AuthService {
   static AuthService? _instance;
-
-  AuthService._internal();
+  late final Dio dio;
+  AuthService._internal() {
+    dio = DioConfig().authDio;
+  }
 
   factory AuthService() {
     _instance ??= AuthService._internal();
@@ -19,7 +22,7 @@ class AuthService {
     required String password,
   }) async {
     final response = await dio.post(
-      '/auth/login',
+      'auth/login',
       data: {'email': email, 'password': password},
     );
 
