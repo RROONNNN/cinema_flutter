@@ -25,6 +25,120 @@ class AdminMoviesBloc extends Bloc<AdminMoviesEvent, AdminMoviesState> {
     on<AdminMoviesUpdateGenre>(_onAdminMoviesUpdateGenre);
     on<AdminMoviesArchiveGenre>(_onAdminMoviesArchiveGenre);
     on<AdminMoviesRestoreGenre>(_onAdminMoviesRestoreGenre);
+    on<AdminMoviesSearchMovies>(_onAdminMoviesSearchMovies);
+    on<AdminMoviesSearchGenres>(_onAdminMoviesSearchGenres);
+    on<AdminMoviesLoadMoreGenres>(_onAdminMoviesLoadMoreGenres);
+    on<AdminMoviesOnSearchChange>(_onAdminMoviesOnSearchChange);
+  }
+
+  Future<void> _onAdminMoviesOnSearchChange(
+    AdminMoviesOnSearchChange event,
+    Emitter<AdminMoviesState> emit,
+  ) async {
+    emit(state.copyWith(searchQuery: event.searchQuery));
+  }
+
+  Future<void> _onAdminMoviesSearchGenres(
+    AdminMoviesSearchGenres event,
+    Emitter<AdminMoviesState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final genres = await _movieService.getAllGenres(
+        page: 1,
+        limit: 10,
+        search: state.searchQuery,
+      );
+      emit(
+        state.copyWith(
+          availableGenres: genres,
+          isLoading: false,
+          genresPage: 1,
+          hasLoadMore: true,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          status: AdminMoviesStatus.error,
+          errorMessage: "Failed to search genres",
+        ),
+      );
+    }
+  }
+
+  Future<void> _onAdminMoviesLoadMoreGenres(
+    AdminMoviesLoadMoreGenres event,
+    Emitter<AdminMoviesState> emit,
+  ) async {
+    if (!state.hasLoadMore) {
+      return;
+    }
+    try {
+      final genres = await _movieService.getAllGenres(
+        page: state.page + 1,
+        limit: state.limit,
+        search: state.searchQuery,
+      );
+      if (genres.isNotEmpty) {
+        final hasLoadMore = genres.length == state.limit;
+        final newPage = hasLoadMore ? state.genresPage + 1 : state.genresPage;
+        emit(
+          state.copyWith(
+            availableGenres: [...state.availableGenres, ...genres],
+            isLoading: false,
+            genresPage: newPage,
+            hasLoadMore: hasLoadMore,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            availableGenres: [...state.availableGenres, ...genres],
+            isLoading: false,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          status: AdminMoviesStatus.error,
+          errorMessage: "Failed to load more genres",
+        ),
+      );
+    }
+  }
+
+  Future<void> _onAdminMoviesSearchMovies(
+    AdminMoviesSearchMovies event,
+    Emitter<AdminMoviesState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final movies = await _movieService.getMovies(
+        page: 1,
+        limit: state.limit,
+        search: state.searchQuery,
+      );
+      emit(
+        state.copyWith(
+          movies: movies,
+          isLoading: false,
+          page: 1,
+          hasLoadMore: true,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isLoading: false,
+          status: AdminMoviesStatus.error,
+          errorMessage: "Failed to search movies",
+        ),
+      );
+    }
   }
 
   Future<void> _onAdminMoviesCreateGenre(
@@ -243,18 +357,32 @@ class AdminMoviesBloc extends Bloc<AdminMoviesEvent, AdminMoviesState> {
     AdminMoviesInitial event,
     Emitter<AdminMoviesState> emit,
   ) async {
+    bool isLoaded = false;
+    if (state.status == AdminMoviesStatus.loaded) {
+      isLoaded = true;
+    }
     emit(state.copyWith(status: AdminMoviesStatus.loading));
     try {
       final movies = await _movieService.getMovies(page: 1, limit: 10);
       emit(state.copyWith(status: AdminMoviesStatus.loaded, movies: movies));
       final genres = await _movieService.getAllGenres();
-      emit(
-        state.copyWith(
-          status: AdminMoviesStatus.loaded,
-          availableGenres: genres,
-          movies: movies,
-        ),
-      );
+      if (isLoaded) {
+        emit(
+          state.reInitialize(
+            cachedThumbnails: state.cachedThumbnails,
+            movies: movies,
+            availableGenres: genres,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            status: AdminMoviesStatus.loaded,
+            availableGenres: genres,
+            movies: movies,
+          ),
+        );
+      }
     } catch (e) {
       emit(state.copyWith(status: AdminMoviesStatus.error));
     }
@@ -264,17 +392,27 @@ class AdminMoviesBloc extends Bloc<AdminMoviesEvent, AdminMoviesState> {
     AdminMoviesLoadMore event,
     Emitter<AdminMoviesState> emit,
   ) async {
+    if (!state.hasLoadMore) {
+      return;
+    }
     try {
       final movies = await _movieService.getMovies(
         page: state.page + 1,
         limit: state.limit,
+        search: state.searchQuery,
       );
-      emit(
-        state.copyWith(
-          status: AdminMoviesStatus.loaded,
-          movies: [...state.movies, ...movies],
-        ),
-      );
+      if (movies.isNotEmpty) {
+        final hasLoadMore = movies.length == state.limit;
+        final newPage = hasLoadMore ? state.page + 1 : state.page;
+        emit(
+          state.copyWith(
+            status: AdminMoviesStatus.loaded,
+            movies: [...state.movies, ...movies],
+            page: newPage,
+            hasLoadMore: hasLoadMore,
+          ),
+        );
+      }
     } catch (e) {
       emit(
         state.copyWith(

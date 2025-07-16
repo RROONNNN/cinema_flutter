@@ -107,3 +107,28 @@ final class AdminMoviesRestoreGenre extends AdminMoviesEvent {
   @override
   List<Object> get props => [genreId];
 }
+
+final class AdminMoviesSearchMovies extends AdminMoviesEvent {
+  const AdminMoviesSearchMovies();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class AdminMoviesSearchGenres extends AdminMoviesEvent {
+  const AdminMoviesSearchGenres();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class AdminMoviesLoadMoreGenres extends AdminMoviesEvent {}
+
+final class AdminMoviesOnSearchChange extends AdminMoviesEvent {
+  final String searchQuery;
+
+  const AdminMoviesOnSearchChange({required this.searchQuery});
+
+  @override
+  List<Object> get props => [searchQuery];
+}

@@ -10,7 +10,10 @@ class AdminMoviesState extends Equatable {
   final bool isLoading;
   final List<Movie> movies;
   final int page;
+  final int genresPage;
   final int limit;
+  final bool hasLoadMore;
+  final String? searchQuery;
   final Map<String, Image> cachedThumbnails;
   final String? errorMessage;
   final String? successMessage;
@@ -23,7 +26,10 @@ class AdminMoviesState extends Equatable {
     this.isLoading = false,
     this.movies = const [],
     this.page = 1,
-    this.limit = 10,
+    this.genresPage = 1,
+    this.limit = 3,
+    this.hasLoadMore = true,
+    this.searchQuery,
     this.cachedThumbnails = const {},
     this.errorMessage,
     this.successMessage,
@@ -38,7 +44,10 @@ class AdminMoviesState extends Equatable {
     selectedMovie,
     movies,
     page,
+    genresPage,
     limit,
+    hasLoadMore,
+    searchQuery,
     cachedThumbnails,
     errorMessage,
     successMessage,
@@ -52,7 +61,10 @@ class AdminMoviesState extends Equatable {
     bool? isLoading,
     List<Movie>? movies,
     int? page,
+    int? genresPage,
     int? limit,
+    bool? hasLoadMore,
+    String? searchQuery,
     Map<String, Image>? cachedThumbnails,
     String? errorMessage,
     String? successMessage,
@@ -65,10 +77,26 @@ class AdminMoviesState extends Equatable {
       isLoading: isLoading ?? false,
       movies: movies ?? this.movies,
       page: page ?? this.page,
+      genresPage: genresPage ?? this.genresPage,
       limit: limit ?? this.limit,
+      hasLoadMore: hasLoadMore ?? this.hasLoadMore,
+      searchQuery: searchQuery ?? this.searchQuery,
       cachedThumbnails: cachedThumbnails ?? this.cachedThumbnails,
       errorMessage: errorMessage,
       successMessage: successMessage,
+    );
+  }
+
+  AdminMoviesState reInitialize({
+    required Map<String, Image> cachedThumbnails,
+    required List<Movie> movies,
+    required List<Genres> availableGenres,
+  }) {
+    return AdminMoviesState(
+      status: AdminMoviesStatus.loaded,
+      cachedThumbnails: cachedThumbnails,
+      movies: movies,
+      availableGenres: availableGenres,
     );
   }
 }

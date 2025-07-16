@@ -4,7 +4,6 @@ import 'package:cinema_flutter/shared/routes/routes.dart';
 import 'package:cinema_flutter/shared/themes/bloc/theme_bloc.dart';
 import 'package:cinema_flutter/shared/themes/bloc/theme_event.dart';
 import 'package:cinema_flutter/shared/themes/bloc/theme_state.dart';
-import 'package:cinema_flutter/view/admin/main/admin_main.dart';
 import 'package:cinema_flutter/view/auth_page/auth_page.dart';
 import 'package:cinema_flutter/view_model/auth/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';

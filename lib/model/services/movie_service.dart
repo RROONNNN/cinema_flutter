@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cinema_flutter/shared/utils/dio_config.dart';
 import 'package:cinema_flutter/model/data_models/movie.dart';
 import 'package:cinema_flutter/model/data_models/genres.dart';
