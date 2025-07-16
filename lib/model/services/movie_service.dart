@@ -80,15 +80,6 @@ class MovieService {
     }
   }
 
-  // Delete movie
-  Future<void> deleteMovie(String id) async {
-    try {
-      await dio.delete('/movies/$id');
-    } catch (e) {
-      throw Exception('Failed to delete movie: $e');
-    }
-  }
-
   // Get all genres
   Future<List<Genres>> getAllGenres({
     int page = 1,
@@ -101,17 +92,67 @@ class MovieService {
         'limit': limit,
         if (search != null && search.isNotEmpty) 'search': search,
       };
-      final token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhYWZhMzU2NS1jMTcxLTRlNTYtODVlZC1mODRmZjNjZDcxYzgiLCJyb2xlIjoiQURNSU4iLCJhdmF0YXJVcmwiOiIiLCJwdWJsaWNJZCI6IiIsImlhdCI6MTc1MjM4MjcyOCwiZXhwIjoxNzUyMzg2MzI4fQ.jOVzqGOuMQFYCEeB1SqElYndacNx69S11h_zVDG5C6Y";
+
       final response = await dio.get(
         '/genres',
         queryParameters: queryParameters,
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       final List<dynamic> genresData = response.data['data'] as List<dynamic>;
       return genresData.map((json) => Genres.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Failed to fetch genres: $e');
+    }
+  }
+
+  Future<void> archiveMovie(String id) async {
+    try {
+      await dio.put('/movies/archive/$id');
+    } catch (e) {
+      throw Exception('Failed to archive movie: $e');
+    }
+  }
+
+  Future<void> restoreMovie(String id) async {
+    try {
+      await dio.put('/movies/restore/$id');
+    } catch (e) {
+      throw Exception('Failed to restore movie: $e');
+    }
+  }
+
+  Future<Genres> createGenre(Map<String, dynamic> genreData) async {
+    try {
+      final response = await dio.post('/genres', data: genreData);
+      final responseData = response.data['data'] as Map<String, dynamic>;
+      return Genres.fromJson(responseData);
+    } catch (e) {
+      throw Exception('Failed to create genre: $e');
+    }
+  }
+
+  Future<Genres> updateGenre(String id, Map<String, dynamic> genreData) async {
+    try {
+      final response = await dio.put('/genres/$id', data: genreData);
+      final responseData = response.data['data'] as Map<String, dynamic>;
+      return Genres.fromJson(responseData);
+    } catch (e) {
+      throw Exception('Failed to update genre: $e');
+    }
+  }
+
+  Future<void> archiveGenre(String id) async {
+    try {
+      await dio.put('/genres/archive/$id');
+    } catch (e) {
+      throw Exception('Failed to archive genre: $e');
+    }
+  }
+
+  Future<void> restoreGenre(String id) async {
+    try {
+      await dio.put('/genres/restore/$id');
+    } catch (e) {
+      throw Exception('Failed to restore genre: $e');
     }
   }
 

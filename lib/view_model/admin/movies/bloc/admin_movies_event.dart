@@ -9,7 +9,7 @@ sealed class AdminMoviesEvent extends Equatable {
 
 final class AdminMoviesInitial extends AdminMoviesEvent {}
 
-final class AdiminMoviesLoadMore extends AdminMoviesEvent {}
+final class AdminMoviesLoadMore extends AdminMoviesEvent {}
 
 final class AdminMoviesCacheImage extends AdminMoviesEvent {
   final String movieId;
@@ -38,4 +38,72 @@ final class AdminMoviesUpdateMovie extends AdminMoviesEvent {
 
   @override
   List<Object> get props => [movieId, movieMap];
+}
+
+final class AdminMoviesReset
+    extends
+        AdminMoviesEvent {} // when create or update is success, reset the state
+
+final class AdminMoviesArchiveMovie extends AdminMoviesEvent {
+  final String movieId;
+
+  const AdminMoviesArchiveMovie({required this.movieId});
+
+  @override
+  List<Object> get props => [movieId];
+}
+
+final class AdminMoviesRestoreMovie extends AdminMoviesEvent {
+  final String movieId;
+
+  const AdminMoviesRestoreMovie({required this.movieId});
+
+  @override
+  List<Object> get props => [movieId];
+}
+
+final class AdminMoviesInitBeforeUpdate extends AdminMoviesEvent {
+  final Movie movie;
+
+  const AdminMoviesInitBeforeUpdate({required this.movie});
+
+  @override
+  List<Object> get props => [movie];
+}
+
+final class AdminMoviesCreateGenre extends AdminMoviesEvent {
+  final Map<String, dynamic> genreMap;
+
+  const AdminMoviesCreateGenre({required this.genreMap});
+
+  @override
+  List<Object> get props => [genreMap];
+}
+
+final class AdminMoviesUpdateGenre extends AdminMoviesEvent {
+  final String genreId;
+  final Map<String, dynamic> genreMap;
+
+  const AdminMoviesUpdateGenre({required this.genreId, required this.genreMap});
+
+  @override
+  List<Object> get props => [genreId, genreMap];
+}
+
+final class AdminMoviesArchiveGenre extends AdminMoviesEvent {
+  final String genreId;
+
+  const AdminMoviesArchiveGenre({required this.genreId});
+
+  @override
+  List<Object> get props => [genreId];
+}
+
+final class AdminMoviesRestoreGenre extends AdminMoviesEvent {
+  final String genreId;
+
+  const AdminMoviesRestoreGenre({required this.genreId});
+
+  @override
+  List<Object> get props => [genreId];
 }

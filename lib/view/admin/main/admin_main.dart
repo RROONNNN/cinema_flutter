@@ -27,10 +27,10 @@ class _AdminMainState extends State<AdminMain> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => AdminMoviesBloc())],
-      child: PopScope(
-        canPop: false,
+    return PopScope(
+      canPop: false,
+      child: MultiBlocProvider(
+        providers: [BlocProvider(create: (context) => AdminMoviesBloc())],
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Admin Dashboard'),
