@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/foundation.dart';
@@ -35,7 +34,7 @@ class _TrailerPreviewPageState extends State<TrailerPreviewPage> {
   Future<void> _initController(String url) async {
     try {
       _controller = url.startsWith('http')
-          ? VideoPlayerController.network(url)
+          ? VideoPlayerController.networkUrl(Uri.parse(url))
           : VideoPlayerController.file(File(url));
       await _controller!.initialize();
       setState(() {

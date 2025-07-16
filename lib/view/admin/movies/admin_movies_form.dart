@@ -9,8 +9,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../../model/data_models/movie.dart';
-import '../../../model/data_models/genres.dart';
-import '../../../model/services/movie_service.dart';
 import 'package:cinema_flutter/view/trailer_preview_page.dart';
 
 class AdminMoviesForm extends StatefulWidget {

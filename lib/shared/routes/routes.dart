@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 class Routes {
   static const String home = '/home';
@@ -13,10 +12,9 @@ class Routes {
       //   );
       default:
         return MaterialPageRoute(
-          builder:
-              (context) => const Scaffold(
-                body: Center(child: Text('No page route provided')),
-              ),
+          builder: (context) => const Scaffold(
+            body: Center(child: Text('No page route provided')),
+          ),
         );
     }
   }
