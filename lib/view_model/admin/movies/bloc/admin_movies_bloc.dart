@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cinema_flutter/model/data_models/genres.dart';
 import 'package:cinema_flutter/model/data_models/movie.dart';
 import 'package:cinema_flutter/model/services/movie_service.dart';
@@ -93,12 +93,7 @@ class AdminMoviesBloc extends Bloc<AdminMoviesEvent, AdminMoviesState> {
           ),
         );
       } else {
-        emit(
-          state.copyWith(
-            availableGenres: [...state.availableGenres, ...genres],
-            isLoading: false,
-          ),
-        );
+        emit(state.copyWith(isLoading: false, hasLoadMore: false));
       }
     } catch (e) {
       emit(

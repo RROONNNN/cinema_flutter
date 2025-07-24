@@ -1,3 +1,5 @@
+import 'package:cinema_flutter/view/admin/cinemas/admin_cinemas_page.dart';
+import 'package:cinema_flutter/view_model/admin/cinemas/bloc/admin_cinema_bloc.dart';
 import 'package:cinema_flutter/view_model/admin/movies/bloc/admin_movies_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +19,7 @@ class _AdminMainState extends State<AdminMain> {
   final List<Widget> _pages = [
     const AdminMoviesPage(),
     const AdminGenresPage(),
+    const AdminCinemasPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -30,7 +33,12 @@ class _AdminMainState extends State<AdminMain> {
     return PopScope(
       canPop: false,
       child: MultiBlocProvider(
-        providers: [BlocProvider(create: (context) => AdminMoviesBloc())],
+        providers: [
+          BlocProvider(create: (context) => AdminMoviesBloc()),
+          BlocProvider(
+            create: (context) => AdminCinemaBloc()..add(AdminCinemaInitial()),
+          ),
+        ],
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Admin Dashboard'),
@@ -62,6 +70,15 @@ class _AdminMainState extends State<AdminMain> {
                   selected: _selectedIndex == 1,
                   onTap: () {
                     _onItemTapped(1);
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.theater_comedy),
+                  title: const Text('Cinemas'),
+                  selected: _selectedIndex == 2,
+                  onTap: () {
+                    _onItemTapped(2);
                     Navigator.pop(context); // Close the drawer
                   },
                 ),
