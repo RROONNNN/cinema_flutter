@@ -4,6 +4,16 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'cinema.freezed.dart';
 part 'cinema.g.dart';
 
+class RoomConverter implements JsonConverter<Room, Map<String, dynamic>> {
+  const RoomConverter();
+
+  @override
+  Room fromJson(Map<String, dynamic> json) => Room.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson(Room room) => room.toJson();
+}
+
 @freezed
 class Cinema with _$Cinema {
   const factory Cinema({

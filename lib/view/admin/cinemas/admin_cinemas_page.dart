@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cinema_flutter/view_model/admin/cinemas/bloc/admin_cinema_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cinema_flutter/view/admin/cinemas/admin_cinemas_form.dart';
+import 'package:cinema_flutter/view/admin/cinemas/admin_rooms_form.dart';
+import 'package:cinema_flutter/view_model/admin/cinemas/bloc/admin_room_bloc.dart';
 
 class AdminCinemasPage extends StatefulWidget {
   const AdminCinemasPage({super.key});
@@ -93,24 +95,49 @@ class _AdminCinemasPageState extends State<AdminCinemasPage> {
                               subtitle: Text(
                                 '${cinema.address}, ${cinema.city}',
                               ),
-                              trailing: CupertinoSwitch(
-                                value: cinema.isActive,
-                                onChanged: (value) {
-                                  if (value) {
-                                    context.read<AdminCinemaBloc>().add(
-                                      AdminCinemaRestoreCinema(
-                                        cinemaId: cinema.id,
-                                      ),
-                                    );
-                                  } else {
-                                    context.read<AdminCinemaBloc>().add(
-                                      AdminCinemaArchiveCinema(
-                                        cinemaId: cinema.id,
-                                      ),
-                                    );
-                                  }
-                                },
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: () =>
+                                        _showAddRoomDialog(context, cinema),
+                                    icon: const Icon(Icons.add_box),
+                                    tooltip: 'Add Room',
+                                  ),
+                                  CupertinoSwitch(
+                                    value: cinema.isActive,
+                                    onChanged: (value) {
+                                      if (value) {
+                                        context.read<AdminCinemaBloc>().add(
+                                          AdminCinemaRestoreCinema(
+                                            cinemaId: cinema.id,
+                                          ),
+                                        );
+                                      } else {
+                                        context.read<AdminCinemaBloc>().add(
+                                          AdminCinemaArchiveCinema(
+                                            cinemaId: cinema.id,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
                               ),
+                              onTap: () {
+                                final bloc = context.read<AdminCinemaBloc>();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BlocProvider.value(
+                                      value: bloc,
+                                      child: AdminCinemasForm(
+                                        cinemaId: cinema.id,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             );
                           },
                         ),
@@ -158,6 +185,67 @@ class _AdminCinemasPageState extends State<AdminCinemasPage> {
         },
         tooltip: 'Add Cinema',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  void _showAddRoomDialog(BuildContext context, cinema) {
+    final TextEditingController roomNameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New Room'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Cinema: ${cinema.name}'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: roomNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Room Name',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., Room 1, VIP Hall, etc.',
+                ),
+                autofocus: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final roomName = roomNameController.text.trim();
+                if (roomName.isNotEmpty) {
+                  Navigator.of(context).pop();
+                  _navigateToRoomForm(context, cinema.id, roomName);
+                }
+              },
+              child: const Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _navigateToRoomForm(
+    BuildContext context,
+    String cinemaId,
+    String roomName,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => AdminRoomBloc(),
+          child: AdminRoomsForm(cinemaId: cinemaId, roomName: roomName),
+        ),
       ),
     );
   }

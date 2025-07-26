@@ -26,7 +26,7 @@ mixin _$Room {
   String get cinemaId => throw _privateConstructorUsedError;
   Cinema? get cinema => throw _privateConstructorUsedError;
   int get totalSeats => throw _privateConstructorUsedError;
-  Map<String, dynamic> get seatLayout => throw _privateConstructorUsedError;
+  List<SeatLayoutItem> get seatLayout => throw _privateConstructorUsedError;
   bool get isActive => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
@@ -52,7 +52,7 @@ abstract class $RoomCopyWith<$Res> {
     String cinemaId,
     Cinema? cinema,
     int totalSeats,
-    Map<String, dynamic> seatLayout,
+    List<SeatLayoutItem> seatLayout,
     bool isActive,
     DateTime createdAt,
     DateTime updatedAt,
@@ -113,7 +113,7 @@ class _$RoomCopyWithImpl<$Res, $Val extends Room>
             seatLayout: null == seatLayout
                 ? _value.seatLayout
                 : seatLayout // ignore: cast_nullable_to_non_nullable
-                      as Map<String, dynamic>,
+                      as List<SeatLayoutItem>,
             isActive: null == isActive
                 ? _value.isActive
                 : isActive // ignore: cast_nullable_to_non_nullable
@@ -164,7 +164,7 @@ abstract class _$$RoomImplCopyWith<$Res> implements $RoomCopyWith<$Res> {
     String cinemaId,
     Cinema? cinema,
     int totalSeats,
-    Map<String, dynamic> seatLayout,
+    List<SeatLayoutItem> seatLayout,
     bool isActive,
     DateTime createdAt,
     DateTime updatedAt,
@@ -223,7 +223,7 @@ class __$$RoomImplCopyWithImpl<$Res>
         seatLayout: null == seatLayout
             ? _value._seatLayout
             : seatLayout // ignore: cast_nullable_to_non_nullable
-                  as Map<String, dynamic>,
+                  as List<SeatLayoutItem>,
         isActive: null == isActive
             ? _value.isActive
             : isActive // ignore: cast_nullable_to_non_nullable
@@ -254,7 +254,7 @@ class _$RoomImpl implements _Room {
     required this.cinemaId,
     this.cinema,
     required this.totalSeats,
-    required final Map<String, dynamic> seatLayout,
+    required final List<SeatLayoutItem> seatLayout,
     this.isActive = true,
     required this.createdAt,
     required this.updatedAt,
@@ -275,12 +275,12 @@ class _$RoomImpl implements _Room {
   final Cinema? cinema;
   @override
   final int totalSeats;
-  final Map<String, dynamic> _seatLayout;
+  final List<SeatLayoutItem> _seatLayout;
   @override
-  Map<String, dynamic> get seatLayout {
-    if (_seatLayout is EqualUnmodifiableMapView) return _seatLayout;
+  List<SeatLayoutItem> get seatLayout {
+    if (_seatLayout is EqualUnmodifiableListView) return _seatLayout;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_seatLayout);
+    return EqualUnmodifiableListView(_seatLayout);
   }
 
   @override
@@ -366,7 +366,7 @@ abstract class _Room implements Room {
     required final String cinemaId,
     final Cinema? cinema,
     required final int totalSeats,
-    required final Map<String, dynamic> seatLayout,
+    required final List<SeatLayoutItem> seatLayout,
     final bool isActive,
     required final DateTime createdAt,
     required final DateTime updatedAt,
@@ -386,7 +386,7 @@ abstract class _Room implements Room {
   @override
   int get totalSeats;
   @override
-  Map<String, dynamic> get seatLayout;
+  List<SeatLayoutItem> get seatLayout;
   @override
   bool get isActive;
   @override

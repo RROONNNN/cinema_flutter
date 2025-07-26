@@ -16,7 +16,11 @@ _$CinemaImpl _$$CinemaImplFromJson(Map<String, dynamic> json) => _$CinemaImpl(
   latitude: (json['latitude'] as num?)?.toDouble(),
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
-  rooms: json['rooms'] as List<dynamic>? ?? const [],
+  rooms:
+      (json['rooms'] as List<dynamic>?)
+          ?.map((e) => Room.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$$CinemaImplToJson(_$CinemaImpl instance) =>

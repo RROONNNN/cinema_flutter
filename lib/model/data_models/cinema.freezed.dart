@@ -30,7 +30,7 @@ mixin _$Cinema {
   double? get latitude => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
-  List<dynamic> get rooms => throw _privateConstructorUsedError;
+  List<Room> get rooms => throw _privateConstructorUsedError;
 
   /// Serializes this Cinema to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -56,7 +56,7 @@ abstract class $CinemaCopyWith<$Res> {
     double? latitude,
     DateTime createdAt,
     DateTime updatedAt,
-    List<dynamic> rooms,
+    List<Room> rooms,
   });
 }
 
@@ -127,7 +127,7 @@ class _$CinemaCopyWithImpl<$Res, $Val extends Cinema>
             rooms: null == rooms
                 ? _value.rooms
                 : rooms // ignore: cast_nullable_to_non_nullable
-                      as List<dynamic>,
+                      as List<Room>,
           )
           as $Val,
     );
@@ -152,7 +152,7 @@ abstract class _$$CinemaImplCopyWith<$Res> implements $CinemaCopyWith<$Res> {
     double? latitude,
     DateTime createdAt,
     DateTime updatedAt,
-    List<dynamic> rooms,
+    List<Room> rooms,
   });
 }
 
@@ -222,7 +222,7 @@ class __$$CinemaImplCopyWithImpl<$Res>
         rooms: null == rooms
             ? _value._rooms
             : rooms // ignore: cast_nullable_to_non_nullable
-                  as List<dynamic>,
+                  as List<Room>,
       ),
     );
   }
@@ -241,7 +241,7 @@ class _$CinemaImpl implements _Cinema {
     this.latitude,
     required this.createdAt,
     required this.updatedAt,
-    final List<dynamic> rooms = const [],
+    final List<Room> rooms = const [],
   }) : _rooms = rooms;
 
   factory _$CinemaImpl.fromJson(Map<String, dynamic> json) =>
@@ -266,10 +266,10 @@ class _$CinemaImpl implements _Cinema {
   final DateTime createdAt;
   @override
   final DateTime updatedAt;
-  final List<dynamic> _rooms;
+  final List<Room> _rooms;
   @override
   @JsonKey()
-  List<dynamic> get rooms {
+  List<Room> get rooms {
     if (_rooms is EqualUnmodifiableListView) return _rooms;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_rooms);
@@ -343,7 +343,7 @@ abstract class _Cinema implements Cinema {
     final double? latitude,
     required final DateTime createdAt,
     required final DateTime updatedAt,
-    final List<dynamic> rooms,
+    final List<Room> rooms,
   }) = _$CinemaImpl;
 
   factory _Cinema.fromJson(Map<String, dynamic> json) = _$CinemaImpl.fromJson;
@@ -367,7 +367,7 @@ abstract class _Cinema implements Cinema {
   @override
   DateTime get updatedAt;
   @override
-  List<dynamic> get rooms;
+  List<Room> get rooms;
 
   /// Create a copy of Cinema
   /// with the given fields replaced by the non-null parameter values.

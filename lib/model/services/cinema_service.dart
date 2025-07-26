@@ -1,6 +1,8 @@
 import 'package:cinema_flutter/model/data_models/cinema.dart';
+import 'package:cinema_flutter/model/data_models/room.dart';
 import 'package:cinema_flutter/shared/utils/dio_config.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 class CinemaService {
   static CinemaService? _instance;
@@ -78,6 +80,26 @@ class CinemaService {
       await dio.put('/cinemas/$id/restore');
     } catch (e) {
       throw Exception('Failed to restore cinema: $e');
+    }
+  }
+
+  Future<Room> createRoom(Map<String, dynamic> roomData) async {
+    try {
+      final response = await dio.post('/rooms', data: roomData);
+      final createdRoomData = response.data['data'] as Map<String, dynamic>;
+      return Room.fromJson(createdRoomData);
+    } catch (e) {
+      throw Exception('Failed to create room: $e');
+    }
+  }
+
+  Future<Room> getRoomById(String id) async {
+    try {
+      final response = await dio.get('/rooms/$id');
+      final roomData = response.data['data'] as Map<String, dynamic>;
+      return Room.fromJson(roomData);
+    } catch (e) {
+      throw Exception('Failed to get room: $e');
     }
   }
 }

@@ -13,6 +13,7 @@ class AdminCinemaState extends Equatable {
   final String? successMessage;
   final Map<String, Image> cachedThumbnails;
   final bool isSaving;
+  final Cinema? loadedCinema;
 
   const AdminCinemaState({
     this.status = AdminCinemaStatus.loading,
@@ -25,6 +26,7 @@ class AdminCinemaState extends Equatable {
     this.successMessage,
     this.cachedThumbnails = const {},
     this.isSaving = false,
+    this.loadedCinema,
   });
 
   @override
@@ -38,6 +40,7 @@ class AdminCinemaState extends Equatable {
     successMessage,
     cachedThumbnails,
     isSaving,
+    loadedCinema,
   ];
 
   AdminCinemaState copyWith({
@@ -51,6 +54,7 @@ class AdminCinemaState extends Equatable {
     String? successMessage,
     Map<String, Image>? cachedThumbnails,
     bool? isSaving,
+    Cinema? loadedCinema,
   }) {
     return AdminCinemaState(
       status: status ?? this.status,
@@ -63,6 +67,7 @@ class AdminCinemaState extends Equatable {
       successMessage: successMessage ?? this.successMessage,
       cachedThumbnails: cachedThumbnails ?? this.cachedThumbnails,
       isSaving: isSaving ?? this.isSaving,
+      loadedCinema: loadedCinema ?? this.loadedCinema,
     );
   }
 }

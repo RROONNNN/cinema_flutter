@@ -1,3 +1,4 @@
+import 'package:cinema_flutter/model/data_models/room.dart';
 import 'package:cinema_flutter/model/services/cinema_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,53 @@ class AdminCinemaBloc extends Bloc<AdminCinemaEvent, AdminCinemaState> {
     on<AdminCinemaRestoreCinema>(_onAdminCinemaRestoreCinema);
     on<AdminCinemaSearchCinemas>(_onAdminCinemaSearchCinemas);
     on<AdminCinemaOnSearch>(_onAdminCinemaOnSearch);
+    on<AdminRoomAddedToCinema>(_onAdminRoomAddedToCinema);
+    on<AdminCinemaLoadCinema>(_onAdminCinemaLoadCinema);
+    on<AdminCinemaRemoveLoadedCinema>(_onAdminCinemaRemoveLoadedCinema);
+  }
+
+  Future<void> _onAdminCinemaRemoveLoadedCinema(
+    AdminCinemaRemoveLoadedCinema event,
+    Emitter<AdminCinemaState> emit,
+  ) async {
+    emit(state.copyWith(loadedCinema: null));
+  }
+
+  Future<void> _onAdminCinemaLoadCinema(
+    AdminCinemaLoadCinema event,
+    Emitter<AdminCinemaState> emit,
+  ) async {
+    try {
+      final cinema = await _cinemaService.getCinemaById(event.cinemaId);
+      emit(state.copyWith(loadedCinema: cinema));
+    } catch (e) {
+      debugPrint("Error loading cinema: $e");
+      emit(state.copyWith(errorMessage: "Error loading cinema: $e"));
+    }
+  }
+
+  Future<void> _onAdminRoomAddedToCinema(
+    AdminRoomAddedToCinema event,
+    Emitter<AdminCinemaState> emit,
+  ) async {
+    try {
+      bool found = false;
+      final newCinemas = state.cinemas.map((cinema) {
+        if (cinema.id == event.room.cinemaId) {
+          found = true;
+          return cinema.copyWith(rooms: [...cinema.rooms, event.room]);
+        }
+        return cinema;
+      }).toList();
+      if (!found) {
+        final cinema = await _cinemaService.getCinemaById(event.room.cinemaId);
+        newCinemas.add(cinema.copyWith(rooms: [event.room]));
+      }
+      emit(state.copyWith(cinemas: newCinemas));
+    } catch (e) {
+      debugPrint("Error adding room to cinema: $e");
+      emit(state.copyWith(errorMessage: "Error adding room to cinema: $e"));
+    }
   }
 
   Future<void> _onAdminCinemaOnSearch(

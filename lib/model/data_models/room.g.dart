@@ -14,7 +14,9 @@ _$RoomImpl _$$RoomImplFromJson(Map<String, dynamic> json) => _$RoomImpl(
       ? null
       : Cinema.fromJson(json['cinema'] as Map<String, dynamic>),
   totalSeats: (json['totalSeats'] as num).toInt(),
-  seatLayout: json['seatLayout'] as Map<String, dynamic>,
+  seatLayout: (json['seatLayout'] as List<dynamic>)
+      .map((e) => SeatLayoutItem.fromJson(e as Map<String, dynamic>))
+      .toList(),
   isActive: json['isActive'] as bool? ?? true,
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),

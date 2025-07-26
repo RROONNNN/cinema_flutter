@@ -81,3 +81,23 @@ final class AdminCinemaOnSearch extends AdminCinemaEvent {
   @override
   List<Object> get props => [searchQuery];
 }
+
+final class AdminRoomAddedToCinema extends AdminCinemaEvent {
+  final Room room;
+
+  const AdminRoomAddedToCinema({required this.room});
+
+  @override
+  List<Object> get props => [room];
+}
+
+final class AdminCinemaLoadCinema extends AdminCinemaEvent {
+  final String cinemaId;
+
+  const AdminCinemaLoadCinema({required this.cinemaId});
+
+  @override
+  List<Object> get props => [cinemaId];
+}
+
+final class AdminCinemaRemoveLoadedCinema extends AdminCinemaEvent {}
