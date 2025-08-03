@@ -13,11 +13,11 @@ class DioConfig {
   static const String baseHost = 'localhost';
   // Define your services with their ports
   final Map<String, int> _services = {
-    'auth': 8001,
-    'movie': 8002,
-    'cinema': 8003,
-    'showtime': 8004,
-    'booking': 8005,
+    'auth': 8000,
+    'movie': 8000,
+    'cinema': 8000,
+    'showtime': 8000,
+    'booking': 8000,
   };
   final Map<String, Dio> _dioServices = {};
 
@@ -26,7 +26,7 @@ class DioConfig {
     if (port == null) {
       throw Exception('Unknown service: $serviceName');
     }
-    return 'http://$baseHost:$port/api/v1/';
+    return 'http://$baseHost:$port/v1/';
   }
 
   void _initDio(Dio dio) {

@@ -27,7 +27,7 @@ class MovieService {
   }) async {
     try {
       final response = await dio.get(
-        '/movies',
+        '/movies/public',
         queryParameters: {
           'page': page,
           'limit': limit,
@@ -46,7 +46,7 @@ class MovieService {
   // Get movie by ID
   Future<Movie> getMovieById(String id) async {
     try {
-      final response = await dio.get('/movies/$id');
+      final response = await dio.get('/movies/public/$id');
       final movieData = response.data['data'] as Map<String, dynamic>;
       return Movie.fromJson(movieData);
     } catch (e) {
@@ -91,7 +91,7 @@ class MovieService {
       };
 
       final response = await dio.get(
-        '/genres',
+        '/genres/public',
         queryParameters: queryParameters,
       );
       final List<dynamic> genresData = response.data['data'] as List<dynamic>;

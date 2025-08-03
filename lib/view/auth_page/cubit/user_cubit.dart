@@ -62,8 +62,8 @@ class UserCubit extends Cubit<UserState> {
       //   password: state.password.value,
       // );
       await _authenticationRepository.logIn(
-        email: 'user@gmail.com',
-        password: '123456Ron',
+        email: 'admin@gmail.com',
+        password: 'admin@123',
       );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } catch (e) {

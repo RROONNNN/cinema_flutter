@@ -48,25 +48,34 @@ class _AdminCinemasFormState extends State<AdminCinemasForm> {
   void _onSubmit() {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       final values = _formKey.currentState!.value;
-      context.read<AdminCinemaBloc>().add(
-        AdminCinemaCreateCinema(
-          cinemaMap: {
-            'name': values['name'],
-            'address': values['address'],
-            'city': values['city'],
-            'longitude':
-                values['longitude'] != null &&
-                    values['longitude'].toString().isNotEmpty
-                ? double.tryParse(values['longitude'].toString())
-                : null,
-            'latitude':
-                values['latitude'] != null &&
-                    values['latitude'].toString().isNotEmpty
-                ? double.tryParse(values['latitude'].toString())
-                : null,
-          },
-        ),
-      );
+      final cinemaMap = {
+        'name': values['name'],
+        'address': values['address'],
+        'city': values['city'],
+        'longitude':
+            values['longitude'] != null &&
+                values['longitude'].toString().isNotEmpty
+            ? double.tryParse(values['longitude'].toString())
+            : null,
+        'latitude':
+            values['latitude'] != null &&
+                values['latitude'].toString().isNotEmpty
+            ? double.tryParse(values['latitude'].toString())
+            : null,
+      };
+
+      if (isEditing) {
+        context.read<AdminCinemaBloc>().add(
+          AdminCinemaUpdateCinema(
+            cinemaId: widget.cinemaId!,
+            cinemaMap: cinemaMap,
+          ),
+        );
+      } else {
+        context.read<AdminCinemaBloc>().add(
+          AdminCinemaCreateCinema(cinemaMap: cinemaMap),
+        );
+      }
     }
   }
 
@@ -76,18 +85,27 @@ class _AdminCinemasFormState extends State<AdminCinemasForm> {
       listener: (context, state) {
         if (state.isSaving) {
           // Optionally show a loading indicator
-        } else if (state.status == AdminCinemaStatus.loaded) {
+        } else if (state.status == AdminCinemaStatus.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.successMessage ?? 'Operation completed successfully',
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
           Navigator.of(context).pop();
         } else if (state.status == AdminCinemaStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage ?? 'Error saving cinema'),
+              backgroundColor: Colors.red,
             ),
           );
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Add Cinema')),
+        appBar: AppBar(title: Text(isEditing ? 'Edit Cinema' : 'Add Cinema')),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: BlocBuilder<AdminCinemaBloc, AdminCinemaState>(

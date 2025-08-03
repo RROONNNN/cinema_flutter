@@ -55,6 +55,7 @@ class AdminCinemaState extends Equatable {
     Map<String, Image>? cachedThumbnails,
     bool? isSaving,
     Cinema? loadedCinema,
+    bool clearLoadedCinema = false,
   }) {
     return AdminCinemaState(
       status: status ?? this.status,
@@ -67,7 +68,13 @@ class AdminCinemaState extends Equatable {
       successMessage: successMessage ?? this.successMessage,
       cachedThumbnails: cachedThumbnails ?? this.cachedThumbnails,
       isSaving: isSaving ?? this.isSaving,
-      loadedCinema: loadedCinema ?? this.loadedCinema,
+      loadedCinema: clearLoadedCinema
+          ? null
+          : (loadedCinema ?? this.loadedCinema),
     );
+  }
+
+  AdminCinemaState removeLoadedCinema() {
+    return copyWith(clearLoadedCinema: true);
   }
 }

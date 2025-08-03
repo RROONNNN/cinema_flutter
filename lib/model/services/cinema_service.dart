@@ -24,7 +24,7 @@ class CinemaService {
   }) async {
     try {
       final response = await dio.get(
-        '/cinemas',
+        '/cinemas/public',
         queryParameters: {'page': page, 'limit': limit, 'search': search},
       );
       final List<dynamic> cinemasData = response.data['data'] as List<dynamic>;
@@ -36,9 +36,10 @@ class CinemaService {
 
   Future<Cinema> getCinemaById(String id) async {
     try {
-      final response = await dio.get('/cinemas/$id');
+      final response = await dio.get('/cinemas/public/$id');
       final cinemaData = response.data['data'] as Map<String, dynamic>;
-      return Cinema.fromJson(cinemaData);
+      final cinema = Cinema.fromJson(cinemaData);
+      return cinema;
     } catch (e) {
       throw Exception('Failed to fetch cinema: $e');
     }
@@ -95,7 +96,7 @@ class CinemaService {
 
   Future<Room> getRoomById(String id) async {
     try {
-      final response = await dio.get('/rooms/$id');
+      final response = await dio.get('/rooms/public/$id');
       final roomData = response.data['data'] as Map<String, dynamic>;
       return Room.fromJson(roomData);
     } catch (e) {

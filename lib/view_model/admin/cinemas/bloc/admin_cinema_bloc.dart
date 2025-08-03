@@ -30,7 +30,7 @@ class AdminCinemaBloc extends Bloc<AdminCinemaEvent, AdminCinemaState> {
     AdminCinemaRemoveLoadedCinema event,
     Emitter<AdminCinemaState> emit,
   ) async {
-    emit(state.copyWith(loadedCinema: null));
+    emit(state.removeLoadedCinema());
   }
 
   Future<void> _onAdminCinemaLoadCinema(
@@ -175,9 +175,10 @@ class AdminCinemaBloc extends Bloc<AdminCinemaEvent, AdminCinemaState> {
       );
       emit(
         state.copyWith(
-          status: AdminCinemaStatus.loaded,
+          status: AdminCinemaStatus.success,
           cinemas: [...state.cinemas, cinema],
           isSaving: false,
+          successMessage: 'Cinema updated successfully',
         ),
       );
     } catch (e) {
@@ -201,9 +202,10 @@ class AdminCinemaBloc extends Bloc<AdminCinemaEvent, AdminCinemaState> {
       final cinema = await _cinemaService.createCinema(event.cinemaMap);
       emit(
         state.copyWith(
-          status: AdminCinemaStatus.loaded,
+          status: AdminCinemaStatus.success,
           cinemas: [...state.cinemas, cinema],
           isSaving: false,
+          successMessage: 'Cinema created successfully',
         ),
       );
     } catch (e) {
