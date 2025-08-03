@@ -1,4 +1,6 @@
 import 'package:cinema_flutter/view/admin/cinemas/admin_cinemas_page.dart';
+import 'package:cinema_flutter/view/admin/showtimes/admin_showtime_page.dart';
+import 'package:cinema_flutter/view_model/admin/bloc/admin_showtime_bloc.dart';
 import 'package:cinema_flutter/view_model/admin/cinemas/bloc/admin_cinema_bloc.dart';
 import 'package:cinema_flutter/view_model/admin/movies/bloc/admin_movies_bloc.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class _AdminMainState extends State<AdminMain> {
     const AdminMoviesPage(),
     const AdminGenresPage(),
     const AdminCinemasPage(),
+    const AdminShowtimePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -38,6 +41,7 @@ class _AdminMainState extends State<AdminMain> {
           BlocProvider(
             create: (context) => AdminCinemaBloc()..add(AdminCinemaInitial()),
           ),
+          BlocProvider(create: (context) => AdminShowtimeBloc()),
         ],
         child: Scaffold(
           appBar: AppBar(
@@ -79,6 +83,15 @@ class _AdminMainState extends State<AdminMain> {
                   selected: _selectedIndex == 2,
                   onTap: () {
                     _onItemTapped(2);
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.theater_comedy),
+                  title: const Text('Showtimes'),
+                  selected: _selectedIndex == 3,
+                  onTap: () {
+                    _onItemTapped(3);
                     Navigator.pop(context); // Close the drawer
                   },
                 ),

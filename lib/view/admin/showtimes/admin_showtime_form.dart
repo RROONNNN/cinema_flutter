@@ -6,16 +6,16 @@ import 'package:cinema_flutter/view_model/admin/bloc/admin_showtime_bloc.dart';
 import 'package:cinema_flutter/model/services/cinema_service.dart';
 import 'package:intl/intl.dart';
 
-class ShowtimeForm extends StatefulWidget {
+class AdminShowtimeForm extends StatefulWidget {
   final Showtime? showtime;
 
-  const ShowtimeForm({super.key, this.showtime});
+  const AdminShowtimeForm({super.key, this.showtime});
 
   @override
-  State<ShowtimeForm> createState() => _ShowtimeFormState();
+  State<AdminShowtimeForm> createState() => _AdminShowtimeFormState();
 }
 
-class _ShowtimeFormState extends State<ShowtimeForm> {
+class _AdminShowtimeFormState extends State<AdminShowtimeForm> {
   final _formKey = GlobalKey<FormState>();
   final _priceController = TextEditingController();
 

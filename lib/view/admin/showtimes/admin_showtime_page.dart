@@ -2,18 +2,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cinema_flutter/view_model/admin/bloc/admin_showtime_bloc.dart';
-import 'package:cinema_flutter/view/admin/showtimes/showtime_form.dart';
+import 'package:cinema_flutter/view/admin/showtimes/admin_showtime_form.dart';
 import 'package:cinema_flutter/model/data_models/showtime.dart';
 import 'package:intl/intl.dart';
 
-class ShowtimePage extends StatefulWidget {
-  const ShowtimePage({super.key});
+class AdminShowtimePage extends StatefulWidget {
+  const AdminShowtimePage({super.key});
 
   @override
-  State<ShowtimePage> createState() => _ShowtimePageState();
+  State<AdminShowtimePage> createState() => _AdminShowtimePageState();
 }
 
-class _ShowtimePageState extends State<ShowtimePage> {
+class _AdminShowtimePageState extends State<AdminShowtimePage> {
   final TextEditingController _searchController = TextEditingController();
   String? _selectedDaytime;
   Timer? _searchTimer;
@@ -186,9 +186,15 @@ class _ShowtimePageState extends State<ShowtimePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          final bloc = context.read<AdminShowtimeBloc>();
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const ShowtimeForm()),
+            MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                value: bloc,
+                child: const AdminShowtimeForm(),
+              ),
+            ),
           ).then((_) {
             // Refresh the list when returning from form
             context.read<AdminShowtimeBloc>().add(AdminShowtimeInitial());
@@ -336,10 +342,14 @@ class _ShowtimePageState extends State<ShowtimePage> {
         trailing: PopupMenuButton<String>(
           onSelected: (value) {
             if (value == 'edit') {
+              final bloc = context.read<AdminShowtimeBloc>();
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ShowtimeForm(showtime: showtime),
+                  builder: (context) => BlocProvider.value(
+                    value: bloc,
+                    child: AdminShowtimeForm(showtime: showtime),
+                  ),
                 ),
               ).then((_) {
                 // Refresh the list when returning from form
@@ -378,10 +388,14 @@ class _ShowtimePageState extends State<ShowtimePage> {
           ],
         ),
         onTap: () {
+          final bloc = context.read<AdminShowtimeBloc>();
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ShowtimeForm(showtime: showtime),
+              builder: (context) => BlocProvider.value(
+                value: bloc,
+                child: AdminShowtimeForm(showtime: showtime),
+              ),
             ),
           ).then((_) {
             // Refresh the list when returning from form
